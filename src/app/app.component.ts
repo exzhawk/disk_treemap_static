@@ -3,6 +3,7 @@ import {DataService} from "./data.service";
 import * as d3 from 'd3';
 import {children} from "../../../../../../Apps/Anaconda3/Lib/site-packages/bokeh/server/static/js/types/core/dom";
 import * as prettyBytes from "pretty-bytes";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -17,15 +18,20 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataService.getData('test2').subscribe(data => {
+    forkJoin([
+      this.dataService.getSizeTree(),
+      this.dataService.getInfo(),
+    ]).subscribe(results => {
       // console.log(data);
+      const data = results[0]
+      const info = results[1]
 
       function prepareData(d: Map<string, any>): Map<string, any>[] {
         const nodes = []
         for (const [key, value] of Object.entries(d)) {
           const node = {name: key}
           if (typeof (value) === 'number') {
-            if (value!==0){
+            if (value !== 0) {
               node['value'] = value;
               nodes.push(node)
             }
@@ -55,7 +61,7 @@ export class AppComponent implements OnInit {
       const format = prettyBytes;
       const height = 700;
       const width = 1800;
-      const name = d => d.ancestors().reverse().map(d => d.data.name).join('/');
+      const name = d => d.ancestors().reverse().map(d => d.data.name).filter(d => d.length > 0).join(info.sep);
 
       function tile(node, x0, y0, x1, y1) {
         d3.treemapBinary(node, 0, 0, width, height);
@@ -109,10 +115,7 @@ export class AppComponent implements OnInit {
           .attr('clip-path', d => d.clipUid)
           .attr('font-weight', d => d === root ? 'bold' : null)
           .selectAll('tspan')
-          .data(d => {
-            // console.log(d)
-            return [(d === root ? name(d) : d.data.name),format(d.value)];
-          })
+          .data(d => [(d === root ? name(d) : d.data.name), format(d.value)])
           .join('tspan')
           .attr('x', 3)
           .attr("y", (d, i, nodes) => `${((i === nodes.length - 1) ? 0 : 1) * 0.2 + 1.1 + i * 1.2}em`)
@@ -126,7 +129,7 @@ export class AppComponent implements OnInit {
       function position(group, root) {
         group.selectAll("g")
           .attr("transform", d => {
-            if(y(d.y0)==undefined){
+            if (y(d.y0) == undefined) {
               console.log(d);
             }
             return d === root ? `translate(0,-30)` : `translate(${x(d.x0)},${y(d.y0)})`;

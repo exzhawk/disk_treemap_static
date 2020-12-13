@@ -40,6 +40,18 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "assets": [
+                "src/favicon.ico",
+                {
+                  "glob": "**/*",
+                  "input": "src/assets/",
+                  "ignore": [
+                    "**/info.json",
+                    "**/size_tree.json"
+                  ],
+                  "output": "/assets/"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -122,6 +134,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "webapp3"
 }

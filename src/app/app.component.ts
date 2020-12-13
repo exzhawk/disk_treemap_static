@@ -1,7 +1,6 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {DataService} from "./data.service";
 import * as d3 from 'd3';
-import {children} from "../../../../../../Apps/Anaconda3/Lib/site-packages/bokeh/server/static/js/types/core/dom";
 import * as prettyBytes from "pretty-bytes";
 import {forkJoin} from "rxjs";
 
@@ -22,7 +21,6 @@ export class AppComponent implements OnInit {
       this.dataService.getSizeTree(),
       this.dataService.getInfo(),
     ]).subscribe(results => {
-      // console.log(data);
       const data = results[0]
       const info = results[1]
 
@@ -46,7 +44,6 @@ export class AppComponent implements OnInit {
       const hierarchyNode = d3.hierarchy({name: '', children: prepareData(data), value: null})
         .sum(d => d.value)
         .sort((a, b) => b.value - a.value);
-      // console.log(hierarchyNode);
       let count = 0;
       const DOM = {
         uid: function (e) {
@@ -74,7 +71,6 @@ export class AppComponent implements OnInit {
 
         }
       }
-
 
       const treemap = d3.treemap().tile(tile)(hierarchyNode)
 
@@ -128,12 +124,7 @@ export class AppComponent implements OnInit {
 
       function position(group, root) {
         group.selectAll("g")
-          .attr("transform", d => {
-            if (y(d.y0) == undefined) {
-              console.log(d);
-            }
-            return d === root ? `translate(0,-30)` : `translate(${x(d.x0)},${y(d.y0)})`;
-          })
+          .attr("transform", d => d === root ? `translate(0,-30)` : `translate(${x(d.x0)},${y(d.y0)})`)
           .select("rect")
           .attr("width", d => d === root ? width : x(d.x1) - x(d.x0))
           .attr("height", d => d === root ? 30 : y(d.y1) - y(d.y0));
@@ -164,7 +155,7 @@ export class AppComponent implements OnInit {
         y.domain([d.parent.y0, d.parent.y1]);
 
         svg.transition()
-          .duration(750)
+          .duration(500)
           .call(t => group0.transition(t).remove()
             .attrTween("opacity", () => t => d3.interpolate(1, 0)(t).toString())
             .call(position, d))

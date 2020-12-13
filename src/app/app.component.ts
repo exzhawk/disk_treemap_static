@@ -10,7 +10,7 @@ import {forkJoin} from "rxjs";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'webapp3';
+  title = 'Disk Treemap';
 
   constructor(private dataService: DataService,
               private hostElement: ElementRef) {

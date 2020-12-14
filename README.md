@@ -1,4 +1,8 @@
-# Webapp3
+# disk_treemap-webapp
+
+The static page of disk_treemap
+
+Code derived from https://observablehq.com/@d3/zoomable-treemap
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.3.
 

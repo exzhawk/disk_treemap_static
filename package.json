@@ -1,5 +1,5 @@
 {
-  "name": "webapp",
+  "name": "disk_treemap-webapp",
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",

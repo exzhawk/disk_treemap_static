@@ -56,8 +56,8 @@ export class AppComponent implements OnInit {
 
 
       const format = prettyBytes;
-      const height = 700;
-      const width = 1800;
+      const height = window.innerHeight;
+      const width = window.innerWidth;
       const name = d => d.ancestors().reverse().map(d => d.data.name).filter(d => d.length > 0).join(info.sep);
 
       function tile(node, x0, y0, x1, y1) {
@@ -79,7 +79,7 @@ export class AppComponent implements OnInit {
 
       const svg = d3.select(this.hostElement.nativeElement).append("svg")
         .attr('viewBox', `0.5 -30.5 ${width} ${height + 30}`)
-        .style('font', '10px sans-serif');
+        .style('font', '14px sans-serif');
 
       let group = svg.append('g')
         .call(render, treemap);
@@ -114,7 +114,7 @@ export class AppComponent implements OnInit {
           .data(d => [(d === root ? name(d) : d.data.name), format(d.value)])
           .join('tspan')
           .attr('x', 3)
-          .attr("y", (d, i, nodes) => `${((i === nodes.length - 1) ? 0 : 1) * 0.2 + 1.1 + i * 1.2}em`)
+          .attr("y", (d, i, nodes) => `${((i === nodes.length - 1) ? 0 : 1) * 0.2 + 0.9 + i * 1.2}em`)
           .attr("fill-opacity", (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
           .attr("font-weight", (d, i, nodes) => i === nodes.length - 1 ? "normal" : null)
           .text(d => d);

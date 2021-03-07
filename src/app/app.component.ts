@@ -56,7 +56,7 @@ export class AppComponent implements OnInit {
 
 
       const format = prettyBytes;
-      const height = window.innerHeight;
+      const height = window.innerHeight - 38;
       const width = window.innerWidth;
       const name = d => d.ancestors().reverse().map(d => d.data.name).filter(d => d.length > 0).join(info.sep);
 

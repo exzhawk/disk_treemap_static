@@ -58,7 +58,10 @@ export class AppComponent implements OnInit {
       const format = prettyBytes;
       const height = window.innerHeight - 38;
       const width = window.innerWidth;
-      const name = d => d.ancestors().reverse().map(d => d.data.name).filter(d => d.length > 0).join(info.sep);
+      const name = d => d.ancestors().reverse().map(d => d.data.name).filter(d => d.length > 0)
+        // .filter((d, i) => !(i == 0 && d === info.sep))
+        .map((d, i, a) => (i === 0 && d === info.sep && a.length > 1) ? '' : d)
+        .join(info.sep);
 
       function tile(node, x0, y0, x1, y1) {
         d3.treemapBinary(node, 0, 0, width, height);

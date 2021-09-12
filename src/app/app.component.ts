@@ -70,8 +70,6 @@ export class AppComponent implements OnInit {
           child.x1 = x0 + child.x1 / width * (x1 - x0);
           child.y0 = y0 + child.y0 / height * (y1 - y0);
           child.y1 = y0 + child.y1 / height * (y1 - y0)
-
-
         }
       }
 
@@ -103,17 +101,17 @@ export class AppComponent implements OnInit {
           .text(d => `${name(d)}\n${format(d.value)}`);
 
         node.append('rect')
-          .attr('id', d => (d.leafUid = DOM.uid('leaf')).id)
+          .attr('id', d => (d.leafUid = DOM.uid('leaf').id))
           .attr('fill', d => d === root ? '#fff' : d.children ? '#ccc' : '#ddd')
           .attr('stroke', '#fff');
 
         node.append('clipPath')
-          .attr('id', d => (d.clipUid = DOM.uid('clip')).id)
+          .attr('id', d => (d.clipUid = DOM.uid('clip').id))
           .append('use')
-          .attr('xlink:href', d => d.leafUid.href);
+          .attr('xlink:href', d => new URL('#' + d.leafUid, location.href));
 
         node.append('text')
-          .attr('clip-path', d => d.clipUid)
+          .attr('clip-path', d => `url(${new URL('#' + d.clipUid, location.href)})`)
           .attr('font-weight', d => d === root ? 'bold' : null)
           .selectAll('tspan')
           .data(d => [(d === root ? name(d) : d.data.name), format(d.value)])

@@ -92,6 +92,8 @@ export class AppComponent implements OnInit {
           .selectAll('g')
           .data(root.children.concat(root))
           .join('g')
+          .filter(d => (x(d.x1) - x(d.x0) > 1) && (y(d.y1) - y(d.y0) > 1))
+          .filter((d, i, a) => i < 1000 || i === a.length - 1);
 
         node.filter(d => d === root ? d.parent : d.children)
           .attr('cursor', 'pointer')

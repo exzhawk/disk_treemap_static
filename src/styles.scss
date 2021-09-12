@@ -1,4 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
-body{
+html {
+  height: 100%;
+  width: 100%;
+  box-sizing:border-box;
+  margin:0;
+  padding: 8px;
+}
+
+body {
   overflow: hidden;
+  height: 100%;
+  width: 100%;
+  margin: 0;
 }

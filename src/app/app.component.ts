@@ -56,8 +56,8 @@ export class AppComponent implements OnInit {
 
 
       const format = prettyBytes;
-      const height = window.innerHeight - 38;
-      const width = window.innerWidth;
+      const height = document.body.offsetHeight;
+      const width = document.body.offsetWidth;
       const name = d => d.ancestors().reverse().map(d => d.data.name).filter(d => d.length > 0)
         // .filter((d, i) => !(i == 0 && d === info.sep))
         .map((d, i, a) => (i === 0 && d === info.sep && a.length > 1) ? '' : d)
@@ -80,7 +80,15 @@ export class AppComponent implements OnInit {
       const x = d3.scaleLinear().rangeRound([0, width]);
       const y = d3.scaleLinear().rangeRound([0, height]);
 
-      const svg = d3.select(this.hostElement.nativeElement).append("svg")
+      const canvas = d3.select(this.hostElement.nativeElement).append('canvas').attr('width', width).attr('height', height);
+      const context = canvas.node().getContext('2d');
+      context.translate(0, 30);
+      const hiddenCanvas = d3.select(this.hostElement.nativeElement).append('canvas').attr('width', width).attr('height', height);
+      const hiddenContext = hiddenCanvas.node().getContext('2d');
+      hiddenContext.translate(0, 30);
+
+      // const svg = d3.select(this.hostElement.nativeElement).append("svg")
+      const svg = d3.select(document.createElement('custom'))
         .attr('viewBox', `0.5 -30.5 ${width} ${height + 30}`)
         .style('font', '14px sans-serif');
 
@@ -123,6 +131,47 @@ export class AppComponent implements OnInit {
           .text(d => d);
 
         group.call(position, root);
+        drawCanvas(root);
+        drawHiddenCanvas(root);
+      }
+
+      function drawCanvas(root) {
+        const elements = svg.selectAll('g > g');
+        elements.each(function (d: any) {
+          const node = d3.select(this);
+          context.beginPath();
+          console.log(node.attr('fill'))
+          context.fillStyle = node.select('rect').attr('fill');
+          console.log(context.fillStyle)
+          let rect: number[];
+          if (d === root) {
+            rect = [0, -30, width, 30];
+          } else {
+            rect = [x(d.x0), y(d.y0), x(d.x1) - x(d.x0), y(d.y1) - y(d.y0)];
+          }
+          // @ts-ignore
+          context.rect(...rect);
+          console.log([x(d.x0), y(d.y0), x(d.x1) - x(d.x0), y(d.y1) - y(d.y0)])
+          context.fill();
+          context.closePath();
+
+          // context.save();
+          // context.beginPath();
+          // @ts-ignore
+          // context.rect(...rect)
+          // context.clip();
+          context.font = '1.2 em';
+          context.fillStyle = 'black';
+          context.textBaseline = 'top';
+          console.log([d.data.name, rect[0], rect[1]]);
+          context.fillText(d === root ? name(d) : d.data.name, rect[0], rect[1]);
+          console.log([format(d.value), rect[0], rect[1] + context.measureText('T').fontBoundingBoxDescent])
+          context.fillText(format(d.value), rect[0], rect[1] + context.measureText('T').fontBoundingBoxDescent);
+          // context.restore();
+        })
+      }
+      function drawHiddenCanvas(root){
+
       }
 
       function position(group, root) {

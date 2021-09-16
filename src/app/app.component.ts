@@ -88,14 +88,12 @@ export class AppComponent implements OnInit {
       function render(group, root) {
         const node = group
           .selectAll('g')
-          .data(root.children.concat(root))
+          .data(root.children.filter((d, i) => (x(d.x1) - x(d.x0) > 1) && (y(d.y1) - y(d.y0) > 1) && i < 1000).concat(root))
           .join('g')
-          .filter(d => (x(d.x1) - x(d.x0) > 1) && (y(d.y1) - y(d.y0) > 1))
-          .filter((d, i, a) => i < 1000 || i === a.length - 1);
 
         node.filter(d => d === root ? d.parent : d.children)
           .attr('cursor', 'pointer')
-          .on('click', d => d === root ? zoomout(root) : zoomin(d));
+          .on('click', (e, d) => d === root ? zoomout(root) : zoomin(d));
 
         node.append('title')
           .text(d => `${name(d)}\n${format(d.value)}`);
